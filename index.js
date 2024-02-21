@@ -18,6 +18,7 @@ app.get("/", (req, res)=>{
 })
 
 const linkedin = async (link) => {
+	console.log("launched")
 	try {
 		let f1 = fs.readFileSync("results.json","utf-8")
 		let results = JSON.parse(f1);
