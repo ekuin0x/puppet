@@ -1,12 +1,29 @@
 const puppeteer = require('puppeteer');
 const fs = require("fs")
 
+const express = require("express");
+const app = express();
+const PORT = 3030;
+
+app.get("/", (req, res)=>{
+	setInterval(function(){
+		const l = fs.readFileSync("links.json","utf-8")
+		const links = JSON.parse(l)
+		
+		for(let i=0; i<2;i++){
+			let link = links[Math.floor(Math.random(0,1) * links.length)]
+			linkedin(link)
+		}
+	},15000)
+})
+
 const linkedin = async (link) => {
 	try {
 		let f1 = fs.readFileSync("results.json","utf-8")
 		let results = JSON.parse(f1);
 
 		const browser = await puppeteer.launch({headless:true});
+		await page.setUserAgent("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36")
 		const page = await browser.newPage();
 		await page.goto(link);
 		await new Promise(resolve => setTimeout(resolve, 2500));
@@ -47,16 +64,10 @@ const linkedin = async (link) => {
 	}
 };
 
-setInterval(function(){
-	const l = fs.readFileSync("links.json","utf-8")
-	const links = JSON.parse(l)
-	
-	for(let i=0; i<2;i++){
-		let link = links[Math.floor(Math.random(0,1) * links.length)]
-		linkedin(link)
-	}
 
 
-},15000)
 
+app.listen(PORT, () => {
+	console.log(`server started on port ${PORT}`);
+  });
 
